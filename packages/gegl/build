@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+meson build \
+	--prefix=/usr \
+	-Dintrospection=false
+
+DESTDIR="$1" ninja -C build -j ${JOBS:-1} install
