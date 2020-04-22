@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+# sed -i -e '/$(helpbrowser)/d' plug-ins/Makefile.in
+#autoreconf -vi --disable-gtk-doc
+
+patch -p1 < fix_intltool.patch
+patch -p1 < remove_glib_networking.patch
+patch -p1 < remove_po_dir.patch
+
+# sed -i -e '/$(helpbrowser)/d' plug-ins/Makefile.in
+
+./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/bin \
+    --disable-altivec \
+    --disable-static \
+    --disable-python \
+    --disable-nls \
+    --without-webkit
+
+#      sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+make
+make DESTDIR="$1" install
+
+# mv $PKG/usr/share/man/man1/gimp-console{-${version%.*}.1,.1}
+#rm -r $PKG/usr/share/{gtk-doc,locale}
