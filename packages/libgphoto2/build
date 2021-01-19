@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+./configure \
+    --prefix=/usr \
+    --disable-nls
+	
+make
+make DESTDIR="$1" install
+
+# Create and install udev rules
+mkdir -p "$1"/usr/lib/udev/rules.d
+mkdir -p "$1"/usr/lib/udev/hwdb.d
+"$1"/usr/lib/libgphoto2/print-camera-list udev-rules version 201 group camera > "$1"/usr/lib/udev/rules.d/40-gphoto.rules
+"$1"/usr/lib/libgphoto2/print-camera-list hwdb > "$1"/usr/lib/udev/hwdb.d/20-gphoto.hwdb
